@@ -64,7 +64,7 @@ class MovieHorizontal extends StatelessWidget {
     return GestureDetector(
       child: tarjeta,
       onTap: (){
-        print(pelicula.title);
+        Navigator.pushNamed(context, 'detalle', arguments: pelicula);
       },
     );
   }
