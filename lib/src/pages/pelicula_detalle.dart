@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:movies/src/models/pelicula_model.dart';
+import 'package:movies/src/provider/peliculas_provider.dart';
+import 'package:movies/src/models/actor_model.dart';
 
 class PeliculaDetalle extends StatelessWidget {
 
@@ -19,7 +22,8 @@ class PeliculaDetalle extends StatelessWidget {
               _posterTitulo(context, pelicula),
               _descripcion(pelicula),
               _descripcion(pelicula),
-              _descripcion(pelicula)
+              _descripcion(pelicula),
+              _crearCasting(pelicula)
             ]),
           )
         ],
@@ -88,6 +92,60 @@ class PeliculaDetalle extends StatelessWidget {
       child: Text(
         pelicula.overview,
         textAlign: TextAlign.justify,
+      ),
+    );
+  }
+
+  Widget _crearCasting(Pelicula pelicula){
+    final peliProvider = PeliculasProvider();
+
+    return FutureBuilder(
+      future: peliProvider.getActores(pelicula.id.toString()),
+      builder: (context, AsyncSnapshot snapshot) {
+        if(snapshot.hasData){
+          return _creatActoresPageView(snapshot.data);
+        }else{
+          return Center(child: CircularProgressIndicator());
+        }
+      }
+    );
+  }
+
+  Widget _creatActoresPageView(List<Actor> actores){
+    return SizedBox(
+      height: 200.0,
+      child: PageView.builder(
+        controller: PageController(
+          viewportFraction: 0.3,
+          initialPage: 1
+        ),
+        itemCount: actores.length,
+        itemBuilder: (context, i){
+          return _actorTarjeta(actores[i]);
+        }
+      ),
+    );
+  }
+
+  Widget _actorTarjeta(Actor actor){
+    return Container(
+      child: Column(
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20.0),
+            child: FadeInImage(
+              image: NetworkImage(actor.getPhoto()),
+              placeholder: AssetImage('assets/img/no-image.jpg'),
+              height: 150.0,
+              fit: BoxFit.cover
+            ),
+          ),
+          SizedBox(height: 5.0),
+          Text(
+            actor.name,
+            overflow: TextOverflow.ellipsis,
+          )
+        ],
       ),
     );
   }

@@ -44,4 +44,12 @@ class Actor {
     order       = json['order'];
     profilePath = json['profile_path'];
   }
+
+  getPhoto(){
+    if(profilePath == null){
+      return "https://www.hopkinsmedicine.org/-/media/feature/noimageavailable.ashx?h=260&la=en&w=380&hash=A457CA39862F8CF1EC734AE8854EC90654A704D3";
+    }else{
+      return 'https://image.tmdb.org/t/p/w500/$profilePath';
+    }
+  }
 }
